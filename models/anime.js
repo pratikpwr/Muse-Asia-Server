@@ -22,7 +22,8 @@ const animeSchema = Schema(
             required: true
         },
         rating:{
-            type: Number
+            type: Number,
+            required: true
         },
         playlistId:{
             type: String,
