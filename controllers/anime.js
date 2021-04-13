@@ -4,8 +4,8 @@ const Anime = require('../models/anime');
 
 exports.getAllAnime= async (req, res, next) =>{
 
-
-    Anime.find().then((anime)=> {
+    try {
+        anime = await Anime.find();
 
         throwError({
             condition: !anime,
@@ -31,12 +31,13 @@ exports.getAllAnime= async (req, res, next) =>{
             statusCode: 200,
             anime: allAnime
         });
-    }).catch((err) => {
+
+    } catch (err) {
         catchError({next: next, error: err});
-    });
+    }
 };
 
-exports.addAnime = (req, res, next) => {
+exports.addAnime = async (req, res, next) => {
     const errors = validationResult(req);
     throwError({
         condition: !errors.isEmpty,
@@ -52,7 +53,7 @@ exports.addAnime = (req, res, next) => {
     const playlistId = req.body.playlistId;
     const japPlaylistId = req.body.japPlaylistId;
 
-    const anime = new Anime({
+    const newAnime = new Anime({
         title: title,
         japTitle: japTitle,
         description: description,
@@ -62,40 +63,44 @@ exports.addAnime = (req, res, next) => {
         japPlaylistId: japPlaylistId
     });
 
-    anime.save().then((anime) => {
+    try {
+        const anime = await newAnime.save();
+
         res.status(201).json({
             message: "Success! Anime added." ,
             statusCode: 201,
             anime: anime
         });
-    }).catch((err) => {
-        catchError({next: next, error: err});
-    });
-}
 
-exports.getAnime = (req, res, next) => {
+    } catch (err) {
+        catchError({next: next, error: err});
+    }
+};
+
+exports.getAnime = async (req, res, next) => {
 
     const animeId = req.params.animeId;
 
-    Anime.findById(animeId).then((anime)=> {
+    try{
+        const anime = await Anime.findById(animeId);
 
         throwError({
             condition: !anime,
             errMsg: 'Anime not Found!',
             statusCode: 404
-        })
+        });
 
         res.status(200).json({
             message: "Success! Anime found." ,
             statusCode: 200,
             anime: anime
         });
-    }).catch((err) => {
+    } catch (err) {
         catchError({next: next, error: err});
-    });
-}
+    }
+};
 
-exports.editAnime = (req, res, next) => {
+exports.editAnime = async (req, res, next) => {
     const errors = validationResult(req);
     throwError({
         condition: !errors.isEmpty,
@@ -112,7 +117,10 @@ exports.editAnime = (req, res, next) => {
     const playlistId = req.body.playlistId;
     const japPlaylistId = req.body.japPlaylistId
 
-    Anime.findById(animeId).then((anime)=>{
+    try{
+
+        const anime = await  Anime.findById(animeId);
+
         throwError({
             condition: !anime,
             errMsg: 'Anime not Found!',
@@ -127,8 +135,7 @@ exports.editAnime = (req, res, next) => {
         anime.playlistId = playlistId;
         anime.japPlaylistId = japPlaylistId;
 
-        return anime.save();
-    }).then((updatedAnime)=> {
+        const updatedAnime = await anime.save();
 
         throwError({
             condition: !updatedAnime,
@@ -141,15 +148,18 @@ exports.editAnime = (req, res, next) => {
             statusCode: 200,
             anime: updatedAnime
         });
-    }).catch((err) => {
-        catchError({next: next, error: err});
-    });
-}
 
-exports.deleteAnime = (req, res, next) => {
+    } catch (err) {
+        catchError({next: next, error: err});
+    }
+};
+
+exports.deleteAnime = async (req, res, next) => {
     const animeId = req.params.animeId;
 
-    Anime.findByIdAndDelete(animeId).then((anime)=> {
+    try{
+
+        const anime =  await Anime.findByIdAndDelete(animeId);
 
         throwError({
             condition: !anime,
@@ -161,10 +171,11 @@ exports.deleteAnime = (req, res, next) => {
             message: "Success! Anime Deleted." ,
             statusCode: 200,
         });
-    }).catch((err) => {
+
+    } catch (err) {
         catchError({next: next, error: err});
-    });
-}
+    }
+};
 
 const throwError = ({ condition, errMsg, statusCode }) => {
     if (condition) {
@@ -172,11 +183,11 @@ const throwError = ({ condition, errMsg, statusCode }) => {
       error.statusCode = statusCode;
       throw error;
     }
-  };
+};
   
-  const catchError = ({ next, error }) => {
+const catchError = ({ next, error }) => {
     if (!error.statusCode) {
       error.statusCode = 500;
     }
     next(error);
-  };
+};
