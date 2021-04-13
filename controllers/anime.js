@@ -2,7 +2,8 @@ const { validationResult } = require("express-validator");
 
 const Anime = require('../models/anime');
 
-exports.getAllAnime= (req, res, next) =>{
+exports.getAllAnime= async (req, res, next) =>{
+
 
     Anime.find().then((anime)=> {
 
@@ -12,10 +13,23 @@ exports.getAllAnime= (req, res, next) =>{
             statusCode: 404
         });
 
+        let allAnime = [];
+
+        for(i=0; i<anime.length; i++){
+            let ani = {};
+
+            ani.id = anime[i].id;
+            ani.title = anime[i].title;
+            ani.imageUrl = anime[i].imageUrl;
+            ani.rating = anime[i].rating;
+
+            allAnime.push(ani);
+        }
+
         res.status(200).json({
             message: "Success! List of all Anime." ,
             statusCode: 200,
-            anime: anime
+            anime: allAnime
         });
     }).catch((err) => {
         catchError({next: next, error: err});
