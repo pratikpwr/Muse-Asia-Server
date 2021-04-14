@@ -1,6 +1,8 @@
 const { validationResult } = require("express-validator");
 
 const Anime = require('../models/anime');
+const Episode = require('../models/episode');
+const YoutubeAPI = require('../api/youtube');
 
 exports.getAllAnime= async (req, res, next) =>{
 
@@ -66,10 +68,18 @@ exports.addAnime = async (req, res, next) => {
     try {
         const anime = await newAnime.save();
 
-        res.status(201).json({
-            message: "Success! Anime added." ,
-            statusCode: 201,
-            anime: anime
+        // TODO : add episodes here using youtube api
+        // use a function which returns list of episode
+        // fetchEpisodes(playlistId);
+
+        YoutubeAPI.fetchEpisodes(anime._id).then((animeWithEpisodes)=>{
+            res.status(200).json({
+                message: "Success! Anime added." ,
+                statusCode: 200,
+                anime: animeWithEpisodes
+            });
+        }).catch((err) => {
+            catchError({next: next, error: err});
         });
 
     } catch (err) {
@@ -155,6 +165,9 @@ exports.editAnime = async (req, res, next) => {
 };
 
 exports.deleteAnime = async (req, res, next) => {
+
+    // TODO :  Delete episodes related to anime
+
     const animeId = req.params.animeId;
 
     try{
@@ -175,6 +188,34 @@ exports.deleteAnime = async (req, res, next) => {
     } catch (err) {
         catchError({next: next, error: err});
     }
+};
+
+
+exports.getEpisodesOfAnime = async (req, res, next) => {
+
+    const animeId = req.params.animeId;
+
+    try {
+
+      const episodes = await Episode.find().where(animeId);
+      // .sort([{episodeNo : 'ASC'}])
+
+        throwError({
+            condition: !episodes,
+            errMsg: 'Episodes Not Found!',
+            statusCode: 404
+        });
+
+      res.status(200).json({
+          statusCode: 200,
+          message: 'Success! Episodes Found.',
+          episodes: episodes
+      })
+
+    } catch (err) {
+        catchError({next: next, error: err});
+    }
+
 };
 
 const throwError = ({ condition, errMsg, statusCode }) => {

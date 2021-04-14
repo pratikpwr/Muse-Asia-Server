@@ -44,6 +44,8 @@ router.put(
 // DELETE /anime/:animeId - delete specific anime
 router.delete('/:animeId', animeController.deleteAnime);
 
+// GET /anime/episodes/:animeId - list of episodes of an anime
+router.get('/episodes/:animeId', animeController.getEpisodesOfAnime);
 
 
 module.exports = router;
