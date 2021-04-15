@@ -23,7 +23,8 @@ app.use((error, req, res, next) => {
 });
 
 mongoose.connect(
-    "mongodb+srv://mongodb:mongodb@nodeblog.evthp.mongodb.net/museAPI?retryWrites=true&w=majority"
+    "mongodb+srv://mongodb:mongodb@nodeblog.evthp.mongodb.net/museAPI?retryWrites=true&w=majority",
+    {useNewUrlParser: true, useUnifiedTopology: true}
 ).then((result) => {
     app.listen(8080);
 }).catch((err) => console.log(err));

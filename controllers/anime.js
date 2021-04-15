@@ -74,7 +74,7 @@ exports.addAnime = async (req, res, next) => {
 
         YoutubeAPI.fetchEpisodes(anime._id).then((animeWithEpisodes)=>{
             res.status(200).json({
-                message: "Success! Anime added." ,
+                message: "Success! Anime added.",
                 statusCode: 200,
                 anime: animeWithEpisodes
             });
@@ -166,8 +166,6 @@ exports.editAnime = async (req, res, next) => {
 
 exports.deleteAnime = async (req, res, next) => {
 
-    // TODO :  Delete episodes related to anime
-
     const animeId = req.params.animeId;
 
     try{
@@ -179,6 +177,10 @@ exports.deleteAnime = async (req, res, next) => {
             errMsg: 'Anime not Found!',
             statusCode: 404
         });
+
+         // TODO :  Delete episodes related to anime
+
+        await Episode.deleteMany({anime: animeId});
 
         res.status(200).json({
             message: "Success! Anime Deleted." ,
@@ -197,7 +199,7 @@ exports.getEpisodesOfAnime = async (req, res, next) => {
 
     try {
 
-      const episodes = await Episode.find().where(animeId);
+      const episodes = await Episode.find({anime: animeId});
       // .sort([{episodeNo : 'ASC'}])
 
         throwError({
@@ -206,10 +208,24 @@ exports.getEpisodesOfAnime = async (req, res, next) => {
             statusCode: 404
         });
 
+        let allEpisodes = [];
+
+        for(i=0;i< episodes.length; i++){
+
+            let epi = {} ;
+
+            epi.id = episodes[i]._id;
+            epi.title = episodes[i].title;
+            epi.imageUrl = episodes[i].imageUrl;
+            epi.episodeNo = episodes[i].episodeNo;
+
+            allEpisodes.push(epi);
+        }
+
       res.status(200).json({
           statusCode: 200,
           message: 'Success! Episodes Found.',
-          episodes: episodes
+          episodes: allEpisodes
       })
 
     } catch (err) {

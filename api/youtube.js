@@ -6,7 +6,7 @@ const Episode = require('../models/episode');
 
 exports.fetchEpisodes = async (animeId) => {
 
-    const anime = await Anime.findById(animeId);
+    let anime = await Anime.findById(animeId);
     
     const youtubeAPIKey= 'AIzaSyA0kVrh5LwfELmViRbPfX2dCMTkC1Jy8Ag';
     let nextVideosPageToken = '';
