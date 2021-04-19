@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const museApi = require('./constants');
+const musedbLink = require('./constants');
 // const bodyParser = require("body-parser");
 
 const animeRoute = require('./routes/anime');
@@ -31,7 +31,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose.connect(
-    museApi,
+    process.env.Mongoose || musedbLink,
     {
         useNewUrlParser: true,
         useCreateIndex: true,
