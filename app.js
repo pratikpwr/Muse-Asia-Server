@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
+const museApi = require('./constants');
 // const bodyParser = require("body-parser");
 
 const animeRoute = require('./routes/anime');
@@ -29,7 +31,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose.connect(
-    "mongodb+srv://mongodb:mongodb@nodeblog.evthp.mongodb.net/museAPI?retryWrites=true&w=majority",
+    museApi,
     {
         useNewUrlParser: true,
         useCreateIndex: true,
