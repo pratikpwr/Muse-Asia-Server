@@ -10,10 +10,15 @@ const port = process.env.port || 8080;
 
 app.use(express.json());
 
+
+
 app.use('/anime', animeRoute);
 
 app.use('/episode', episodeRoute);
 
+app.use('/', (req,res,next)=>{
+    res.json({message: 'Hello World'});
+})
 
 app.use((error, req, res, next) => {
     console.log(error);
@@ -31,5 +36,5 @@ mongoose.connect(
         useUnifiedTopology: true
     }
 ).then((result) => {
-    app.listen(8080);
+    app.listen(port);
 }).catch((err) => console.log(err));
