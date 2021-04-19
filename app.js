@@ -6,6 +6,7 @@ const animeRoute = require('./routes/anime');
 const episodeRoute = require('./routes/episode');
 
 const app = express();
+const port = process.env.port || 8080;
 
 app.use(express.json());
 
@@ -24,7 +25,11 @@ app.use((error, req, res, next) => {
 
 mongoose.connect(
     "mongodb+srv://mongodb:mongodb@nodeblog.evthp.mongodb.net/museAPI?retryWrites=true&w=majority",
-    {useNewUrlParser: true, useUnifiedTopology: true}
+    {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useUnifiedTopology: true
+    }
 ).then((result) => {
     app.listen(8080);
 }).catch((err) => console.log(err));
