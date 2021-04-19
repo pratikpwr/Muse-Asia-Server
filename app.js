@@ -6,7 +6,7 @@ const animeRoute = require('./routes/anime');
 const episodeRoute = require('./routes/episode');
 
 const app = express();
-const port = process.env.port || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(express.json());
 
@@ -37,4 +37,5 @@ mongoose.connect(
     }
 ).then((result) => {
     app.listen(port);
+    console.log(`Server started at port ${port}!!`);
 }).catch((err) => console.log(err));
