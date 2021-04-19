@@ -35,6 +35,10 @@ const episodeSchema = Schema(
             type: Schema.Types.ObjectId,
             ref: "Anime",
             required: true
+        },
+        sub:{
+            type: Boolean,
+            required: true
         }
     },
     {

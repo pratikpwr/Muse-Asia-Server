@@ -44,7 +44,8 @@ exports.fetchEpisodes = async (animeId) => {
                 releaseDate : playlistItems[i].contentDetails.videoPublishedAt,
                 episodeNo : i + 1,
                 videoId : playlistItems[i].contentDetails.videoId,
-                anime: animeId
+                anime: animeId,
+                sub: true
             });
 
             // if video with same videoId exists in db then old one will be deleted
@@ -61,5 +62,44 @@ exports.fetchEpisodes = async (animeId) => {
         // anime.episodes.push(allEpisodes);
     });
 
+
+    // for japanese playlist
+    superagent.get('https://www.googleapis.com/youtube/v3/playlistItems')
+    .query({
+        part: ["snippet,contentDetails"],
+        playlistId: anime.japPlaylistId,
+        maxResults: '50',
+        pageToken: nextVideosPageToken,
+        key: youtubeAPIKey,
+    })
+    .end(async (err, res) => {
+        if(err){
+            return console.log(err);
+        }
+        
+        const playlistItems = res.body.items;
+        let allEpisodes = [];
+
+        for(i=0; i< playlistItems.length; i++){
+
+            const episode = new Episode({
+                title : playlistItems[i].snippet.title,
+                imageUrl : playlistItems[i].snippet.thumbnails.high.url,
+                description : playlistItems[i].snippet.description,
+                releaseDate : playlistItems[i].contentDetails.videoPublishedAt,
+                episodeNo : i + 1,
+                videoId : playlistItems[i].contentDetails.videoId,
+                anime: animeId,
+                sub: false
+            });
+
+            episode.save().then((savedEpisode) =>{
+                anime.japEpisodes.push(savedEpisode._id);
+            });    
+            
+        }
+    });
+
     return await anime.save();
 }
+

@@ -69,8 +69,6 @@ exports.addAnime = async (req, res, next) => {
         const anime = await newAnime.save();
 
         // TODO : add episodes here using youtube api
-        // use a function which returns list of episode
-        // fetchEpisodes(playlistId);
 
         YoutubeAPI.fetchEpisodes(anime._id).then((animeWithEpisodes)=>{
             res.status(200).json({
@@ -218,6 +216,7 @@ exports.getEpisodesOfAnime = async (req, res, next) => {
             epi.title = episodes[i].title;
             epi.imageUrl = episodes[i].imageUrl;
             epi.episodeNo = episodes[i].episodeNo;
+            epi.subtitle = episodes[i].sub;
 
             allEpisodes.push(epi);
         }
