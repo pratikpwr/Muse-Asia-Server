@@ -55,6 +55,8 @@ exports.addAnime = async (req, res, next) => {
     const playlistId = req.body.playlistId;
     const japPlaylistId = req.body.japPlaylistId;
 
+    await Anime.deleteOne({title: title});
+
     const newAnime = new Anime({
         title: title,
         japTitle: japTitle,
