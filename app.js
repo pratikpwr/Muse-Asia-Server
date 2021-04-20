@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const musedbLink = require('./constants');
 // const bodyParser = require("body-parser");
@@ -13,11 +14,13 @@ const port = process.env.PORT || 8080;
 app.use(express.json());
 
 // this is for CORS error
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader("Access-Control-Allow-Methods", "*");
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+// });
+
+app.use(cors());
 
 app.use('/anime', animeRoute);
 
@@ -43,6 +46,7 @@ mongoose.connect(
         useUnifiedTopology: true
     }
 ).then((result) => {
-    app.listen(port);
-    console.log(`Server started at port ${port}!!`);
+    app.listen(port, ()=>{
+        console.log(`Server started at port ${port}!!`);
+    });
 }).catch((err) => console.log(err));
