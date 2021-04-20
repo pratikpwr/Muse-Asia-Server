@@ -24,7 +24,7 @@ const episodeSchema = Schema(
             type: String,
         },
         episodeNo:{
-            type: String,
+            type: Number,
             required : true
         },
         videoId: {
