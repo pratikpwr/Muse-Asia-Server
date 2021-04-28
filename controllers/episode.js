@@ -3,8 +3,50 @@ const Anime = require('../models/anime');
 const Episode = require('../models/episode');
 const YoutubeAPI = require('../api/youtube');
 
-exports.getRecent = (req, res, next) => {
-    res.status(200).json({message: "Success" , statusCode: 200});
+exports.getRecent = async (req, res, next) => {
+
+
+    // arrange as release date latest at top 
+    // then get top 15 
+
+    // OR
+    // get the episodes released this week only
+
+    try{
+
+        const episodes = await Episode.find({sub:true}).sort({releaseDate: "DESC"}).limit(15);
+        
+        throwError({
+            condition: !episodes,
+            errMsg: 'Episodes Not Found!',
+            statusCode: 404
+        });
+
+        let allEpisodes = [];
+
+        for(i=0;i< episodes.length; i++){
+
+            let epi = {} ;
+
+            epi.id = episodes[i]._id;
+            epi.title = episodes[i].title;
+            epi.imageUrl = episodes[i].imageUrl;
+            epi.episodeNo = episodes[i].episodeNo;
+            epi.subtitle = episodes[i].sub;
+
+            allEpisodes.push(epi);
+        }
+
+      res.status(200).json({
+          statusCode: 200,
+          message: 'Success! Recent Episodes Found.',
+          episodes: allEpisodes
+      })
+
+    }catch(err){
+        catchError({next: next, error: err});
+    }
+
 }
 
 exports.addLatest = async (req, res, next) => {

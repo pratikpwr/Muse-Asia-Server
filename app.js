@@ -27,7 +27,7 @@ app.use('/anime', animeRoute);
 app.use('/episode', episodeRoute);
 
 app.use('/', (req,res,next)=>{
-    res.json({message: 'Hello World'});
+    res.json({message: 'Muse Asia Server'});
 })
 
 app.use((error, req, res, next) => {
