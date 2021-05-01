@@ -2,15 +2,17 @@ const express = require('express');
 const { body } = require("express-validator");
 
 const animeController = require('../controllers/anime');
+const isAuth = require("../middleware/is_auth");
 
 const router = express.Router();
 
 // GET /anime - get all anime
-router.get('/', animeController.getAllAnime);
+router.get('/',isAuth, animeController.getAllAnime);
 
 // POST /anime/add-anime - add anime
 router.post(
     '/add-anime',
+    isAuth,
     [
         body("title").trim().isLength({ min: 1 }),
         body("description").trim().isLength({ min: 1 }),
@@ -24,11 +26,12 @@ router.post(
 );
 
 // GET /anime/:animeId - get specific anime
-router.get('/:animeId', animeController.getAnime);
+router.get('/:animeId',isAuth, animeController.getAnime);
 
 // PUT /anime/:animeId - edit specific anime
 router.put(
     '/:animeId',
+    isAuth,
     [
         body("title").trim().isLength({ min: 1 }),
         body("description").trim().isLength({ min: 1 }),
@@ -42,10 +45,10 @@ router.put(
 );
 
 // DELETE /anime/:animeId - delete specific anime
-router.delete('/:animeId', animeController.deleteAnime);
+router.delete('/:animeId',isAuth, animeController.deleteAnime);
 
 // GET /anime/episodes/:animeId - list of episodes of an anime
-router.get('/episodes/:animeId', animeController.getEpisodesOfAnime);
+router.get('/episodes/:animeId',isAuth, animeController.getEpisodesOfAnime);
 
 
 module.exports = router;

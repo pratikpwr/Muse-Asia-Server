@@ -14,7 +14,7 @@ exports.getRecent = async (req, res, next) => {
 
     try{
 
-        const episodes = await Episode.find({sub:true}).sort({releaseDate: "DESC"}).limit(15);
+        const episodes = await Episode.find({sub:true}).sort({releaseDate: "DESC"}).limit(15).populate('anime');
         
         throwError({
             condition: !episodes,
@@ -30,9 +30,10 @@ exports.getRecent = async (req, res, next) => {
 
             epi.id = episodes[i]._id;
             epi.title = episodes[i].title;
-            epi.imageUrl = episodes[i].imageUrl;
+            epi.imageUrl = episodes[i].anime.imageUrl;
             epi.episodeNo = episodes[i].episodeNo;
             epi.subtitle = episodes[i].sub;
+            epi.anime = episodes[i].anime.title;
 
             allEpisodes.push(epi);
         }

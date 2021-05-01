@@ -7,6 +7,7 @@ const musedbLink = require('./constants');
 
 const animeRoute = require('./routes/anime');
 const episodeRoute = require('./routes/episode');
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -19,12 +20,13 @@ app.use(express.json());
 //   res.setHeader("Access-Control-Allow-Methods", "*");
 //   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 // });
-
 app.use(cors());
 
 app.use('/anime', animeRoute);
 
 app.use('/episode', episodeRoute);
+
+app.use("/auth", authRoutes);
 
 app.use('/', (req,res,next)=>{
     res.json({message: 'Muse Asia Server'});

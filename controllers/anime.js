@@ -199,7 +199,7 @@ exports.getEpisodesOfAnime = async (req, res, next) => {
 
     try {
 
-      const episodes = await Episode.find({anime: animeId}).sort({episodeNo: "ASC"});
+      const episodes = await Episode.find({anime: animeId}).sort({episodeNo: 1});
       // .sort([{episodeNo : 'ASC'}])
 
         throwError({
