@@ -7,12 +7,11 @@ const isAuth = require("../middleware/is_auth");
 const router = express.Router();
 
 // GET /anime - get all anime
-router.get('/',isAuth, animeController.getAllAnime);
+router.get('/', animeController.getAllAnime);
 
 // POST /anime/add-anime - add anime
 router.post(
     '/add-anime',
-    isAuth,
     [
         body("title").trim().isLength({ min: 1 }),
         body("description").trim().isLength({ min: 1 }),
@@ -26,12 +25,11 @@ router.post(
 );
 
 // GET /anime/:animeId - get specific anime
-router.get('/:animeId',isAuth, animeController.getAnime);
+router.get('/:animeId', animeController.getAnime);
 
 // PUT /anime/:animeId - edit specific anime
 router.put(
     '/:animeId',
-    isAuth,
     [
         body("title").trim().isLength({ min: 1 }),
         body("description").trim().isLength({ min: 1 }),
@@ -45,10 +43,10 @@ router.put(
 );
 
 // DELETE /anime/:animeId - delete specific anime
-router.delete('/:animeId',isAuth, animeController.deleteAnime);
+router.delete('/:animeId', animeController.deleteAnime);
 
 // GET /anime/episodes/:animeId - list of episodes of an anime
-router.get('/episodes/:animeId',isAuth, animeController.getEpisodesOfAnime);
+router.get('/episodes/:animeId', animeController.getEpisodesOfAnime);
 
 
 module.exports = router;
